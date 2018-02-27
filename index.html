@@ -10,8 +10,8 @@
 </head>
 <body>
 
-<canvas id="myCanvas" width="480" height="320"></canvas>
-
+<canvas id="myCanvas" width="700" height="400" ></canvas>
+<p>jjjj</p>
 <script>
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
@@ -51,31 +51,26 @@ document.addEventListener("keydown", keyDownHandler, false);
 function keyDownHandler(e) {
     if(e.keyCode === 39 ) {
         rightPressed = true;
-       
         upPressed = false;
         downPressed = false;
-        
     }
+    
     else if(e.keyCode === 37 ) {
         leftPressed = true;
-      
         upPressed = false;
         downPressed = false;
-        
     } 
+    
     else if (e.keyCode === 40 ) {
-        upPressed = true;
-       
+        upPressed = true;   
         leftPressed = false;
         rightPressed = false;
-        
     }
+    
     else if (e.keyCode === 38 ) {
-        downPressed = true;
-        
+        downPressed = true;    
         leftPressed = false;
         rightPressed = false;
-        
     }
 }
 
@@ -113,14 +108,16 @@ const drawBlock = () => {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if(x > canvas.width-ballRadius || x < ballRadius || y > canvas.height-ballRadius || y < ballRadius) {
+    document.location.reload();
+    alert('GAME OVER!, Your Score is ' + score );
+    ctx.clearRect(0, 0, canvas.width, canvas.height); 
+    };
+    
     drawBall();
     drawBlock();
     drawScore();
-    
-    if(x > canvas.width-ballRadius) rightPressed = false;
-    if(x < ballRadius ) leftPressed = false;
-    if(y > canvas.height-ballRadius) upPressed = false;
-    if(y < ballRadius) downPressed = false;
     
     if(x > blockX - ballRadius && x < blockX + blockWidth + ballRadius && y > blockY - ballRadius && y < blockY + blockHeight + ballRadius) blockStatus = false; //коллизия по блоку
      
@@ -139,25 +136,18 @@ function draw() {
     
     if(leftPressed && lastPressed !== 2) {
         lastPressed = 1;
-        x -= speed;
-        
-       
+        x -= speed;           
     }; 
+    
      if(upPressed && lastPressed !== 3) {
         lastPressed = 4;
-      
          y += speed
-       
-        
-    };
-    if(downPressed && lastPressed !== 4) {
-        lastPressed = 3;
-        
-        y -= speed;
-        
-        
     };
     
+    if(downPressed && lastPressed !== 4) {
+        lastPressed = 3;    
+        y -= speed;
+    };
     
     requestAnimationFrame(draw);
 }
