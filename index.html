@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Gamedev Canvas Workshop</title>
+    <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #eee; display: block; margin: 0 auto; }
+    </style>
+</head>
+<body>
+
+<canvas id="myCanvas" width="480" height="320"></canvas>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var ballRadius = 10;
+var x = canvas.width/2;
+var y = canvas.height-30;
+let speed = 7;    
+
+    function randomInteger(min, max) {
+    var rand = min + Math.random() * (max + 1 - min);
+    rand = Math.floor(rand);
+    return rand;
+  }
+
+    
+let rightPressed = false,
+    leftPressed = false,
+    upPressed = false,
+    downPressed = false,
+    lastPressed;
+    
+    let blockStatus = true;
+    
+    let blockWidth = 20;
+    let blockHeight = 20;
+    let blockX = randomInteger(0, canvas.width - blockWidth);
+    let blockY = randomInteger(0, canvas.height - blockHeight);
+    
+    let score = 0;
+    
+document.addEventListener("keydown", keyDownHandler, false);
+
+    
+    
+    //БЛОК УПРАВЛЕНИЯ ШАРОМ//
+    
+function keyDownHandler(e) {
+    if(e.keyCode === 39 ) {
+        rightPressed = true;
+       
+        upPressed = false;
+        downPressed = false;
+        
+    }
+    else if(e.keyCode === 37 ) {
+        leftPressed = true;
+      
+        upPressed = false;
+        downPressed = false;
+        
+    } 
+    else if (e.keyCode === 40 ) {
+        upPressed = true;
+       
+        leftPressed = false;
+        rightPressed = false;
+        
+    }
+    else if (e.keyCode === 38 ) {
+        downPressed = true;
+        
+        leftPressed = false;
+        rightPressed = false;
+        
+    }
+}
+
+
+    //////////////////  
+    
+    function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: "+score, 8, 20);
+}
+
+function drawBall() {
+    
+    ctx.beginPath();
+    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.fillStyle = "green";
+    ctx.fill();
+    ctx.closePath();
+  
+}
+    
+   
+    
+const drawBlock = () => {
+    blockStatus = true;
+    ctx.beginPath();
+    ctx.rect(blockX,blockY,blockWidth,blockHeight);
+    ctx.fillStyle = "red";
+    ctx.fill();
+    ctx.closePath();
+    
+}
+
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawBall();
+    drawBlock();
+    drawScore();
+    
+    if(x > canvas.width-ballRadius) rightPressed = false;
+    if(x < ballRadius ) leftPressed = false;
+    if(y > canvas.height-ballRadius) upPressed = false;
+    if(y < ballRadius) downPressed = false;
+    
+    if(x > blockX - ballRadius && x < blockX + blockWidth + ballRadius && y > blockY - ballRadius && y < blockY + blockHeight + ballRadius) blockStatus = false; //коллизия по блоку
+     
+    if (blockStatus === false) {
+        blockStatus === true
+        speed += 0.1;
+        score += 1;
+        blockX = randomInteger(0, canvas.width - blockWidth);
+        blockY = randomInteger(0, canvas.height - blockHeight);
+    };
+    
+    if(rightPressed && lastPressed !== 1) {
+        lastPressed = 2;
+        x += speed;
+        }
+    
+    if(leftPressed && lastPressed !== 2) {
+        lastPressed = 1;
+        x -= speed;
+        
+       
+    }; 
+     if(upPressed && lastPressed !== 3) {
+        lastPressed = 4;
+      
+         y += speed
+       
+        
+    };
+    if(downPressed && lastPressed !== 4) {
+        lastPressed = 3;
+        
+        y -= speed;
+        
+        
+    };
+    
+    
+    requestAnimationFrame(draw);
+}
+
+
+draw();
+
+    
+</script>
+
+</body>
+</html>
